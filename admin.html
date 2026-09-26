@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>NEXUS Admin</title>
+<style>body{font-family:Arial;padding:15px;background:#f5f5f5} input,select{width:100%;padding:12px;margin:5px 0;border:1px solid #ccc;border-radius:6px;box-sizing:border-box} label{font-weight:800;font-size:12px;margin-top:8px;display:block}.card{background:#fff;padding:20px;border-radius:12px;max-width:600px;margin:auto;box-shadow:0 4px 20px rgba(0,0,0,.08)}.btn{background:#FF4D00;color:#fff;padding:14px;border:none;width:100%;font-weight:800;border-radius:8px;cursor:pointer;margin-top:8px}</style>
+</head><body>
+<div class="card">
+<h2>NEXUS Admin Generator</h2>
+<p style="font-size:12px;color:#666">Fill all spaces, then Generate</p>
+<input id="code" placeholder="Tracking No e.g. NX150021">
+<input id="weight" placeholder="Weight e.g. 4kg">
+<input id="location" placeholder="Current Location e.g. Abuja">
+<select id="status"><option>In Transit</option><option>At Warehouse</option><option>On Hold - Payment Required</option><option>Delivered</option><option>Out for Delivery</option></select>
+<input id="origin" placeholder="Origin e.g. Lagos">
+<input id="destination" placeholder="Destination e.g. Kano">
+<input id="sender" placeholder="Name of Sender">
+<input id="receiver" placeholder="Receiver Name">
+<input id="phone" placeholder="Receiver Phone Number">
+<input id="fee" placeholder="Shipping Fee Amount e.g. ₦15,000 or $50">
+<label>Shipping Date</label><input id="shipDate" type="date" value="2026-09-26">
+<label>Estimated Delivery Date</label><input id="estDate" type="date">
+<button class="btn" onclick="gen()">GENERATE CODE</button>
+<pre id="out" style="background:#111;color:#0f0;padding:15px;margin-top:15px;white-space:pre-wrap;border-radius:8px;min-height:80px"></pre>
+<button class="btn" style="background:#111" onclick="copy()">COPY CODE</button>
+<p style="font-size:11px;margin-top:10px">Paste above last } in tracking.json - Add comma to previous entry!</p>
+</div>
+<script>
+function gen(){
+let c=document.getElementById('code').value.trim().toUpperCase();
+if(!c){alert('Enter Tracking No');return}
+let data={
+ weight: document.getElementById('weight').value || 'N/A',
+ location: document.getElementById('location').value || 'N/A',
+ status: document.getElementById('status').value || 'In Transit',
+ origin: document.getElementById('origin').value || 'N/A',
+ destination: document.getElementById('destination').value || 'N/A',
+ sender: document.getElementById('sender').value || 'N/A',
+ receiver: document.getElementById('receiver').value || 'N/A',
+ phone: document.getElementById('phone').value || 'N/A',
+ fee: document.getElementById('fee').value || 'N/A',
+ shipDate: document.getElementById('shipDate').value || new Date().toISOString().split('T')[0],
+ estDate: document.getElementById('estDate').value || 'N/A',
+ date: new Date().toISOString().split('T')[0]
+};
+let json=`"${c}": ${JSON.stringify(data, null, 2)}`;
+document.getElementById('out').innerText=json+',';
+}
+function copy(){ let t=document.getElementById('out').innerText; if(!t){alert('Generate first');return} navigator.clipboard.writeText(t); alert('Copied! Go to tracking.json, paste ABOVE final }'); }
+</script>
+</body></html>
