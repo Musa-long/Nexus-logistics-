@@ -1,0 +1,5 @@
+{
+  "NX1001": {"weight": "1,250 KG", "location": "Apapa Port, Lagos - Customs", "status": "In Transit", "origin": "China", "destination": "PH", "date": "2026-09-25"},
+  "NX1002": {"weight": "3,400 KG", "location": "NEXUS Warehouse PH - Ready", "status": "At Warehouse", "origin": "USA", "destination": "Lagos", "date": "2026-09-25"},
+  "NX842917": {"weight": "850 KG", "location": "Onne Port - Payment Required", "status": "On Hold - Payment Required", "origin": "Dubai", "destination": "PH", "date": "2026-09-26"}
+}
