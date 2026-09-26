@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS Logistics | Export with NEXUS - Global Cargo & Freight</title>
+<meta name="description" content="NEXUS Logistics - Track your shipment, make payment, 24/7 support">
+<style>
+:root{--orange:#FF4D00;--black:#0a0a0a;--dark:#111}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{background:#fff;color:#111}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 5%;background:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 15px rgba(0,0,0,.08)}
+.logo{font-weight:900;font-size:26px}.logo span{background:var(--black);color:#fff;padding:3px 8px;font-size:12px;margin-left:6px}
+nav a{margin:0 10px;text-decoration:none;color:#111;font-weight:700;font-size:13px}
+.btn{background:var(--orange);color:#fff;padding:12px 22px;border:none;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;border-radius:6px;text-decoration:none;display:inline-block}
+.hero{min-height:92vh;background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.3)),url('img1.jpg') center/cover no-repeat;display:flex;align-items:center;padding:40px 5%;color:#fff}
+.hero h1{font-size:68px;line-height:.85;font-weight:900;letter-spacing:-2px}.hero h1 span{color:var(--orange)}
+.track-card{background:#fff;color:#111;padding:26px;border-radius:14px;margin-top:22px;max-width:560px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.track-row{display:flex;gap:10px;margin-top:12px}.track-row input{flex:1;padding:15px;border:2px solid #e5e5e5;border-radius:8px;font-size:16px}
+#result{display:none;background:#fff;color:#111;border-radius:14px;padding:26px;margin-top:18px;max-width:560px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.line{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee;font-size:14px}
+.services{padding:70px 5%;background:#f4f4f5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:30px}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+.card img{width:100%;height:210px;object-fit:cover}.card.info{padding:18px}
+.pay{background:var(--black);color:#fff;padding:70px 5%;text-align:center}
+.bank{max-width:540px;margin:30px auto;background:#fff;color:#111;padding:26px;border-radius:14px;text-align:left;border-left:7px solid var(--orange)}
+.float-wa{position:fixed;bottom:22px;right:22px;background:#25D366;color:#fff;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;z-index:999;box-shadow:0 8px 25px rgba(0,0,0,.3)}
+footer{padding:30px 5%;background:#0a0a0a;color:#666;text-align:center;font-size:13px}
+@media(max-width:768px){.hero h1{font-size:42px} header nav{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">NX<span>Nexus Logistics</span></div>
+<nav><a href="#">Home</a><a href="#track">Track</a><a href="#pay">Payment</a><a href="#services">Services</a></nav>
+<a href="#track" class="btn">Track Now</a>
+</header>
+
+<section class="hero" id="track">
+<div>
+<h1>EXPORT<br>with <span>NEXUS</span></h1>
+<p style="margin:16px 0;max-width:520px;font-size:18px;color:#e5e5e5">Reliable global logistics, container shipping and last-mile delivery with real-time tracking and secure payment.</p>
+<div class="track-card">
+<h3 style="font-weight:900">TRACK YOUR SHIPMENT</h3>
+<div class="track-row">
+<input type="text" id="codeInput" placeholder="Enter Tracking Number e.g. NX1001">
+<button class="btn" onclick="doTrack()">Track Now</button>
+</div>
+<button class="btn" style="width:100%;margin-top:12px;background:#111;border:2px solid var(--orange);color:var(--orange)" onclick="document.getElementById('pay').scrollIntoView({behavior:'smooth'})">💳 Make Payment - Sterling 8387778364</button>
+<p style="font-size:11px;color:#888;margin-top:10px">Try: NX1001, NX1002, NX842917</p>
+</div>
+<div id="result"></div>
+</div>
+</section>
+
+<section class="services" id="services">
+<h2 style="font-size:42px;font-weight:900;text-align:center">Our Logistics Services</h2>
+<p style="text-align:center;color:#666;margin-top:8px">Using your 6 real NEXUS fleet images</p>
+<div class="grid">
+<div class="card"><img src="img2.jpg" alt="Truck"><div class="info"><h4>Container Lifting & Port Operations</h4><p style="color:#666;font-size:13px;margin-top:6px">Heavy-duty handling with certified equipment.</p></div></div>
+<div class="card"><img src="img3.jpg" alt="Ship"><div class="info"><h4>Ocean Freight & Export</h4><p style="color:#666;font-size:13px;margin-top:6px">Lagos to worldwide destinations.</p></div></div>
+<div class="card"><img src="img4.jpg" alt="Warehouse"><div class="info"><h4>Inland Haulage & Distribution</h4><p style="color:#666;font-size:13px;margin-top:6px">Trucks, warehousing and real-time updates.</p></div></div>
+<div class="card"><img src="img5.jpg" alt="Truck side"><div class="info"><h4>Warehousing & Storage</h4><p style="color:#666;font-size:13px;margin-top:6px">Secure storage in PH & Lagos.</p></div></div>
+<div class="card"><img src="img6.jpg" alt="Logistics"><div class="info"><h4>Customs Clearing</h4><p style="color:#666;font-size:13px;margin-top:6px">Fast clearance at all Nigerian ports.</p></div></div>
+<div class="card" style="background:var(--black);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px"><div><h3 style="color:var(--orange)">24/7 Customer Care</h3><p style="margin-top:10px">WhatsApp Only</p><h2 style="margin-top:8px">09167452777</h2><a href="https://wa.me/2349167452777" target="_blank" class="btn" style="margin-top:14px">Chat Now</a></div></div>
+</div>
+</section>
+
+<section class="pay" id="pay">
+<h2 style="font-size:40px;font-weight:900">MAKE PAYMENT FOR YOUR ITEMS</h2>
+<p style="color:#aaa;margin-top:10px">Pay only to our official company account</p>
+<div class="bank">
+<h4 style="margin-bottom:12px">OFFICIAL BANK DETAILS</h4>
+<p><b>Bank Name:</b> Sterling Bank</p>
+<p><b>Account Name:</b> DATA/247 COMMUNICATION LTD-wad</p>
+<p><b>Account Number:</b> 8387778364</p>
+<hr style="margin:14px 0">
+<p style="font-size:13px;color:#666">⚠️ After payment, send proof + tracking number to WhatsApp for confirmation. No other account is valid.</p>
+<button class="btn" style="width:100%;margin-top:16px" onclick="window.open('https://wa.me/2349167452777?text=Hello%20I%20just%20paid%20for%20tracking%20number%20','_blank')">I HAVE PAID - SEND PROOF</button>
+</div>
+</section>
+
+<footer>
+<p>NEXUS Logistics / DATA/247 COMMUNICATION LTD • Port Harcourt & Lagos • Customer Care: 09167452777 (WhatsApp)</p>
+<p style="margin-top:8px;color:#444">© 2026 All rights reserved. | <a href="admin.html" style="color:#444">Admin</a></p>
+</footer>
+
+<a class="float-wa" href="https://wa.me/2349167452777?text=Hello%20NEXUS%20Customer%20Care" target="_blank">💬</a>
+
+<script>
+// This will load from tracking.json on Render
+let shipments = {};
+fetch('tracking.json')
+.then(r=>r.json())
+.then(data=>{shipments=data; console.log('Tracking loaded', Object.keys(data).length);})
+.catch(()=>{console.log('tracking.json not found, using fallback'); shipments={"NX1001":{"weight":"1,250 KG","location":"Apapa Port, Lagos - Customs Inspection","status":"In Transit","origin":"Guangzhou, China","destination":"Port Harcourt","date":"2026-09-25"}}});
+
+function doTrack(){
+let code=document.getElementById('codeInput').value.trim().toUpperCase();
+let box=document.getElementById('result');
+if(!code){alert('Enter tracking code');return}
+box.style.display='block';
+let d=shipments[code];
+if(!d){box.innerHTML=`<h3 style="color:red">❌ ${code} Not Found</h3><p style="margin-top:10px">Tracking number does not exist. Verify or contact customer care <b>09167452777</b> on WhatsApp.</p>`;return}
+box.innerHTML=`
+<h3>Shipment: ${code} <span style="background:#FF4D00;color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;margin-left:8px">${d.status}</span></h3>
+<div class="line"><span>Weight</span><b>${d.weight}</b></div>
+<div class="line"><span>Current Location</span><b>${d.location}</b></div>
+<div class="line"><span>Origin</span><span>${d.origin}</span></div>
+<div class="line"><span>Destination</span><span>${d.destination}</span></div>
+<div class="line"><span>Last Updated</span><span>${d.date}</span></div>
+<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn" onclick="document.getElementById('pay').scrollIntoView({behavior:'smooth'})">MAKE PAYMENT</button>
+<button class="btn" style="background:#111" onclick="window.open('https://wa.me/2349167452777?text=Help%20with%20${code}','_blank')">WHATSAPP CARE: 09167452777</button>
+</div>`;
+}
+</script>
+</body>
+                                                   </html>
