@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS LOGISTICS - Global Shipping</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Inter',sans-serif; background:#fcfaf7}
+ .nx{font-family:'Syne',sans-serif; letter-spacing:-1px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="bg-white px-5 py-3 flex justify-between items-center sticky top-0 z-40 border-b">
+  <div class="bg-black text-white px-3 py-1.5 flex items-center gap-2">
+    <span class="nx text-3xl font-black">NX</span>
+    <div class="text-[9px] leading-[9px] font-bold"><p>Nexus</p><p>Logistics</p></div>
+  </div>
+  <div class="flex gap-2">
+    <a href="https://wa.me/2349167452777" class="bg-[#25D366] text-white px-4 py-2.5 rounded-full font-bold text-xs">💬 Customer Care</a>
+    <button onclick="openPay()" class="bg-[#ff4d12] text-white px-5 py-2.5 rounded-full font-bold text-xs">Pay For Shipping</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="relative h-[85vh] bg-black overflow-hidden">
+  <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200" class="w-full h-full object-cover opacity-70">
+  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+  <div class="absolute bottom-0 p-6 md:p-16 w-full">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="nx text-white text-5xl md:text-8xl font-black leading-[0.9]">EXPORT<br><span class="text-[#ff4d12]">with NEXUS</span></h1>
+      <p class="text-white/70 max-w-lg mt-4">We ship from USA, UK, China to Nigeria in 5-7 days. Fast, safe, affordable.</p>
+      <div class="mt-8 bg-white rounded-full p-1.5 flex max-w-md shadow-2xl">
+        <input id="tid" placeholder="Enter Tracking ID e.g NX101010" class="flex-1 px-6 py-3 outline-none bg-transparent text-black text-sm">
+        <button onclick="track()" class="bg-black text-white px-8 py-3 rounded-full font-bold text-sm">TRACK</button>
+      </div>
+      <div id="result" class="mt-4 max-w-md"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+  <div>
+    <p class="text-[#ff4d12] font-bold tracking-widest text-xs">ABOUT NEXUS LOGISTICS</p>
+    <h2 class="text-4xl md:text-5xl font-black mt-3 leading-none">We Move What<br>Matters To You</h2>
+    <p class="mt-6 text-gray-600"><b>Nexus Logistics</b> is premium freight for Nigerians home & diaspora.</p>
+  </div>
+  <div class="grid grid-cols-2 gap-4">
+    <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=500" class="rounded-3xl h-64 w-full object-cover">
+    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500" class="rounded-3xl h-64 w-full object-cover mt-8">
+  </div>
+</section>
+
+<!-- TESTIMONIES -->
+<section class="bg-black text-white py-16 px-6 rounded-t-[40px]">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-5xl font-black text-center">What Our Customers Say</h2>
+    <div class="mt-10 grid md:grid-cols-3 gap-6">
+      <div class="bg-[#1a1a1a] p-6 rounded-3xl"><p class="text-yellow-400">★★★★★</p><p class="mt-3">Package arrived in 5 days! Very reliable.</p></div>
+      <div class="bg-[#1a1a1a] p-6 rounded-3xl"><p class="text-yellow-400">★★★★★</p><p class="mt-3">Used Nexus 6 times. No loss.</p></div>
+      <div class="bg-[#1a1a1a] p-6 rounded-3xl"><p class="text-yellow-400">★★★★★</p><p class="mt-3">Best logistics plug!</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND IMAGES -->
+<div class="bg-black px-6 pb-12">
+  <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+    <img src="img1.jpg" class="rounded-2xl h-48 w-full object-cover bg-white">
+    <img src="img2.jpg" class="rounded-2xl h-48 w-full object-cover">
+    <img src="img3.jpg" class="rounded-2xl h-48 w-full object-cover">
+    <img src="img4.jpg" class="rounded-2xl h-48 w-full object-cover">
+  </div>
+</div>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/2349167452777" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-2xl z-50">💬</a>
+
+<!-- PAY MODAL -->
+<div id="payModal" class="fixed inset-0 bg-black/80 hidden z-[60] flex items-center justify-center p-6">
+  <div class="bg-white rounded-[32px] max-w-sm w-full p-8 relative">
+    <button onclick="closePay()" class="absolute right-6 top-6 bg-black/10 w-8 h-8 rounded-full">✕</button>
+    <h2 class="text-2xl font-black text-black">Pay For Shipping</h2>
+    <div class="mt-6 space-y-3">
+      <div class="bg-gray-100 p-4 rounded-2xl flex justify-between"><span class="text-xs text-gray-400">BANK</span><b>Sterling Bank</b></div>
+      <div class="bg-gray-100 p-4 rounded-2xl flex justify-between"><span class="text-xs text-gray-400">ACCOUNT</span><b>8387778364</b></div>
+      <div class="bg-gray-100 p-4 rounded-2xl"><p class="text-xs text-gray-400">NAME</p><b class="text-sm">MFY/DATA 247 COMMUNICATION LTD</b></div>
+    </div>
+    <button onclick="copyAcc()" class="w-full mt-6 bg-black text-white py-4 rounded-full font-bold">Copy Account Number</button>
+    <a href="https://wa.me/2349167452777" target="_blank" class="block text-center w-full mt-3 bg-[#25D366] text-white py-4 rounded-full font-bold">Send Proof</a>
+  </div>
+</div>
+
+<footer class="bg-black text-white/30 text-center py-8 text-xs">© 2026 Nexus Logistics</footer>
+
+<script>
+function openPay(){ document.getElementById('payModal').classList.remove('hidden') }
+function closePay(){ document.getElementById('payModal').classList.add('hidden') }
+function copyAcc(){ navigator.clipboard.writeText('8387778364'); alert('Copied: 8387778364') }
+
+async function track(){
+  const id = document.getElementById('tid').value.trim();
+  if(!id) return alert('Enter Tracking ID');
+  const box = document.getElementById('result');
+  box.innerHTML = '<div class="bg-white/20 text-white p-4 rounded-2xl">Searching...</div>';
+  try{
+    const res = await fetch('/api/track/'+id);
+    if(!res.ok) throw new Error();
+    const d = await res.json();
+    box.innerHTML = `
+      <div class="bg-white text-black p-5 rounded-[20px] shadow-2xl leading-6">
+        <div class="flex justify-between items-center border-b pb-3">
+          <b class="text-lg">${d.trackingId}</b>
+          <span class="bg-[#ff4d12] text-white px-3 py-1 rounded-full text-[11px] font-bold">${d.status}</span>
+        </div>
+        <div class="mt-4 text-sm space-y-2">
+          <p>👤 <b>Receiver:</b> ${d.receiverName||''} - ${d.receiverPhone||''}</p>
+          <p>📦 <b>Sender:</b> ${d.senderName||''} - ${d.senderPhone||''}</p>
+          <p>⚖️ <b>Weight:</b> ${d.weight||''}</p>
+          <p>📍 <b>Location:</b> ${d.currentLocation||''}</p>
+          <p>🌍 <b>Route:</b> ${d.origin||''} → ${d.destination||''}</p>
+          <p>⏰ <b>ETA:</b> ${d.eta||''} | 💰 <b>Fee:</b> ${d.fee||''}</p>
+        </div>
+        <button onclick="openPay()" class="w-full mt-5 bg-[#ff4d12] hover:bg-black text-white py-4 rounded-full font-black text-sm transition">💳 Pay For Shipping Fee - ${d.fee||''}</button>
+        <p class="text-[10px] text-center text-gray-400 mt-2">Click to view payment account</p>
+      </div>
+    `;
+  }catch(e){
+    box.innerHTML = `<div class="bg-red-500 text-white p-4 rounded-2xl">ID <b>${id}</b> not found</div>`;
+  }
+}
+</script>
+</body>
+  </html>
