@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS Logistics - Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial;background:#0f172a;color:#fff;padding:20px}
+.container{max-width:900px;margin:0 auto}
+h1{color:#f59e0b;margin-bottom:10px}
+.card{background:#1e293b;padding:20px;border-radius:12px;margin-bottom:20px;border:1px solid #334155}
+label{display:block;margin:10px 0 5px;color:#94a3b8;font-size:14px}
+input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#fff}
+textarea{height:80px}
+.btn{background:#f59e0b;color:#000;padding:12px 20px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:15px;width:100%}
+.btn:hover{background:#d97706}
+.btn-danger{background:#ef4444;color:#fff;margin-top:10px}
+.btn-small{padding:6px 12px;font-size:12px;width:auto;margin:5px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.success{background:#10b981;padding:10px;border-radius:8px;margin-top:10px;display:none}
+.item{background:#0f172a;padding:12px;border-radius:8px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;border:1px solid #334155}
+.url-box{font-size:12px;color:#f59e0b;background:#000;padding:8px;border-radius:6px;margin:10px 0;word-break:break-all}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>NEXUS Admin - Fresh Start</h1>
+<div id="currentUrl" class="url-box"></div>
+
+<div class="card">
+<label>API URL (auto)</label>
+<input id="apiUrl" readonly>
+</div>
+
+<div class="card">
+<h3>Create New Shipment</h3>
+<label>Tracking Code (e.g. NX100001)</label>
+<input id="code" placeholder="NX...">
+<div class="grid">
+<div>
+<label>Status</label>
+<select id="status">
+<option>In Transit</option>
+<option>Out for Delivery</option>
+<option>Delivered</option>
+<option>Customs Clearance</option>
+<option>Pending</option>
+<option>On Hold</option>
+</select>
+</div>
+<div>
+<label>Location</label>
+<input id="location" placeholder="Lagos, Nigeria">
+</div>
+</div>
+<div class="grid">
+<div>
+<label>Origin</label>
+<input id="origin" placeholder="USA">
+</div>
+<div>
+<label>Destination</label>
+<input id="destination" placeholder="Nigeria">
+</div>
+</div>
+<label>Estimated Delivery</label>
+<input id="eta" placeholder="Nov 15, 2025">
+<label>Fee (e.g. $50 or Paid)</label>
+<input id="fee" placeholder="$0">
+<label>Timeline (JSON format) - leave default for new</label>
+<textarea id="timeline">[{"date":"2025-11-01 10:00","status":"Shipment Created","location":"Origin Warehouse","active":true}]</textarea>
+
+<button class="btn" onclick="saveShipment()">Create Shipment</button>
+<div id="msg" class="success"></div>
+</div>
+
+<div class="card">
+<h3>All Shipments (<span id="count">0</span>)</h3>
+<button class="btn-small" onclick="loadAll()">Refresh</button>
+<button class="btn-small btn-danger" onclick="clearAll()">Delete ALL - Fresh Start</button>
+<div id="list"></div>
+</div>
+</div>
+
+<script>
+const API_URL = window.location.origin;
+document.getElementById("apiUrl").value = API_URL;
+document.getElementById("currentUrl").innerText = "Live URL: " + API_URL + " | Admin: " + API_URL + "/admin.html";
+
+async function saveShipment(){
+  const code = document.getElementById("code").value.trim().toUpperCase();
+  if(!code){ alert("Enter tracking code"); return; }
+  let timeline;
+  try{ timeline = JSON.parse(document.getElementById("timeline").value); }catch(e){ alert("Timeline must be valid JSON"); return; }
+
+  const data = {
+    trackingCode: code,
+    status: document.getElementById("status").value,
+    location: document.getElementById("location").value || "Warehouse",
+    origin: document.getElementById("origin").value || "USA",
+    destination: document.getElementById("destination").value || "Nigeria",
+    eta: document.getElementById("eta").value || "3-5 days",
+    fee: document.getElementById("fee").value || "Pending",
+    timeline: timeline
+  };
+
+  const res = await fetch(`${API_URL}/api/tracking`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(data)
+  });
+  const r = await res.json();
+  if(r.success){
+    document.getElementById("msg").style.display="block";
+    document.getElementById("msg").innerText = "Created: " + code + " - Test at " + API_URL + "/?track=" + code;
+    document.getElementById("code").value="";
+    loadAll();
+  }else{
+    alert("Error: "+ (r.error||"failed"));
+  }
+}
+
+async function loadAll(){
+  try{
+    const res = await fetch(`${API_URL}/api/tracking`);
+    const data = await res.json();
+    const codes = Object.keys(data);
+    document.getElementById("count").innerText = codes.length;
+    let html="";
+    codes.forEach(c=>{
+      html+=`<div class="item"><div><b>${c}</b> - ${data[c].status} - ${data[c].location}</div><button class="btn-small btn-danger" onclick="deleteOne('${c}')">Delete</button></div>`;
+    });
+    if(codes.length==0) html="<p style='color:#64748b;margin-top:10px'>No shipments yet - fresh database ready!</p>";
+    document.getElementById("list").innerHTML = html;
+  }catch(e){
+    document.getElementById("list").innerHTML = "<p>Error loading - is DATABASE_URL set?</p>";
+  }
+}
+
+async function deleteOne(code){
+  if(!confirm("Delete "+code+"?")) return;
+  await fetch(`${API_URL}/api/tracking`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({trackingCode:code, _delete:true})
+  });
+  // fallback direct delete via clear and re-add not ideal, so we use DELETE endpoint
+  // For now we call custom delete
+  await fetch(`${API_URL}/api/track/${code}`,{method:"DELETE"}).catch(()=>{});
+  // simple way: call server to delete
+  const r = await fetch(`${API_URL}/api/tracking`);
+  const all = await r.json();
+  delete all[code];
+  await fetch(`${API_URL}/api/import`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(all)});
+  loadAll();
+}
+
+async function clearAll(){
+  if(!confirm("DELETE ALL TRACKING? Fresh start - this cannot be undone!")) return;
+  if(!confirm("Are you SURE? All shipments will be deleted permanently.")) return;
+  const res = await fetch(`${API_URL}/api/clear`);
+  const d = await res.json();
+  alert(d.message || "Cleared!");
+  loadAll();
+}
+
+// add clear and delete routes helper - fetch override for delete
+// Add DELETE support
+window.addEventListener("load", loadAll);
+</script>
+</body>
+  </html>
