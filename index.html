@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS LOGISTICS | Global Shipping</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter',sans-serif}</style>
+</head>
+<body class="bg-[#f8fafc]">
+<!-- HEADER -->
+<header class="bg-[#0a1931] text-white px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+  <div class="flex items-center gap-3">
+    <img src="img1.jpg" class="w-10 h-10 rounded bg-white object-cover">
+    <div><h1 class="font-extrabold text-lg leading-none">NEXUS LOGISTICS</h1><p class="text-[10px] text-blue-300 tracking-[3px]">GLOBAL SHIPPING</p></div>
+  </div>
+  <a href="admin.html" class="border border-white/20 px-4 py-1.5 rounded-full text-sm hover:bg-white hover:text-black transition">Admin</a>
+</header>
+
+<!-- HERO -->
+<div class="bg-[#0a1931] text-white px-6 pt-10 pb-20">
+  <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+    <div>
+      <h2 class="text-4xl md:text-5xl font-extrabold leading-tight">Track Your Shipment <span class="text-yellow-400">Anywhere</span></h2>
+      <p class="text-white/60 mt-4">Fast, secure and reliable logistics from USA to Nigeria and worldwide.</p>
+      <div class="mt-8 bg-white p-2 rounded-2xl flex shadow-2xl">
+        <input id="tid" placeholder="Enter Tracking ID e.g. NX10001" class="flex-1 px-5 py-3 text-black outline-none rounded-xl">
+        <button onclick="track()" class="bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl hover:bg-yellow-300 transition">TRACK</button>
+      </div>
+      <div id="result" class="mt-6"></div>
+    </div>
+    <img src="img2.jpg" class="rounded-3xl shadow-2xl h-[350px] w-full object-cover hidden md:block">
+  </div>
+</div>
+
+<!-- PAYMENT CARD - Beautiful -->
+<div class="max-w-5xl mx-auto px-6 -mt-10">
+  <div class="bg-white rounded-[24px] shadow-xl p-6 md:p-8 grid md:grid-cols-3 gap-6 border">
+    <div class="md:col-span-2">
+      <div class="flex items-center gap-2 mb-4"><div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div><span class="text-xs font-bold tracking-widest text-gray-400">OFFICIAL PAYMENT ACCOUNT</span></div>
+      <h3 class="text-2xl font-bold">Secure Payment Details</h3>
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[11px] text-gray-400 font-bold">BANK NAME</p><p class="font-bold mt-1">Sterling Bank</p></div>
+        <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[11px] text-gray-400 font-bold">ACCOUNT NUMBER</p><p class="font-bold mt-1 text-lg">8387778364</p></div>
+        <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[11px] text-gray-400 font-bold">ACCOUNT NAME</p><p class="font-bold mt-1 text-sm">MFY/DATA 247 COMMUNICATION LTD</p></div>
+      </div>
+      <p class="text-red-500 text-xs mt-4 bg-red-50 p-3 rounded-xl">⚠️ Pay ONLY to this account. Always send proof to customer care after payment.</p>
+    </div>
+    <div class="bg-[#0a1931] rounded-[20px] p-6 text-white flex flex-col justify-between">
+      <div><h4 class="font-bold">Need Help?</h4><p class="text-white/60 text-sm mt-2">Chat with our support team 24/7 on WhatsApp</p></div>
+      <a href="https://wa.me/2349167452777" target="_blank" class="mt-6 bg-[#25D366] text-center py-3 rounded-full font-bold hover:scale-105 transition">💬 +2349167452777</a>
+      <p class="text-[10px] text-white/40 mt-3 text-center">Average reply time: 2 mins</p>
+    </div>
+  </div>
+</div>
+
+<footer class="text-center py-10 text-gray-400 text-sm">© 2026 Nexus Logistics. All Rights Reserved.</footer>
+
+<script>
+async function track(){
+  const id=document.getElementById('tid').value.trim();
+  if(!id) return alert('Enter Tracking ID');
+  const box=document.getElementById('result');
+  box.innerHTML='<div class="bg-white/10 p-4 rounded-xl">Searching...</div>';
+  try{
+    const res=await fetch('/api/track/'+id);
+    const d=await res.json();
+    box.innerHTML=`<div class="bg-white text-black p-5 rounded-2xl shadow-xl"><p class="text-xs text-gray-400">TRACKING ID: ${d.trackingId}</p><p class="font-extrabold text-xl mt-1">${d.status} 🚚</p><p class="text-sm mt-2">📍 ${d.currentLocation}</p></div>`;
+  }catch(e){ box.innerHTML='<div class="bg-red-500 p-4 rounded-xl">Backend waking up... try again in 20 seconds</div>'; }
+}
+</script>
+</body>
+</html>
