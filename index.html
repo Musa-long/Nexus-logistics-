@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXUS LOGISTICS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Inter, sans-serif; background:#f6f6f3}
+ .nx{font-family:'Syne', sans-serif; letter-spacing:-2px}
+</style>
+</head>
+<body>
+
+<!-- HEADER - NO ADMIN -->
+<header class="bg-white border-b px-6 py-4 flex justify-between items-center sticky top-0 z-40">
+  <div class="flex items-center gap-3">
+    <!-- YOUR NX LOGO -->
+    <div class="bg-black text-white px-3 py-1.5 flex items-center gap-2">
+      <span class="nx text-3xl font-black">NX</span>
+      <div class="text-[9px] leading-[9px] font-bold"><p>Nexus</p><p>Logistics</p></div>
+    </div>
+  </div>
+  <div class="flex gap-3">
+    <button onclick="openPay()" class="bg-[#ff4d12] text-white px-5 py-2.5 rounded-full font-bold text-sm">Pay For Shipping</button>
+  </div>
+</header>
+
+<!-- HERO WITH YOUR IMAGES -->
+<div class="relative h-[75vh] overflow-hidden bg-black">
+  <img id="heroImg" src="img1.jpg" class="w-full h-full object-cover opacity-80">
+  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+
+  <div class="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+    <h1 class="nx text-white text-5xl md:text-8xl font-black leading-none">EXPORT<br>with NEXUS</h1>
+    <div class="mt-8 bg-white rounded-full p-1.5 flex max-w-md shadow-2xl">
+      <input id="tid" placeholder="Tracking ID e.g NX10001" class="flex-1 px-6 py-3 outline-none bg-transparent">
+      <button onclick="track()" class="bg-black text-white px-8 py-3 rounded-full font-bold">TRACK</button>
+    </div>
+    <div id="result" class="mt-4 max-w-md"></div>
+  </div>
+</div>
+
+<!-- GALLERY OF YOUR BRAND IMAGES - Your Logos Back -->
+<div class="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+  <img src="img2.jpg" class="rounded-2xl h-72 w-full object-cover">
+  <img src="img3.jpg" class="rounded-2xl h-72 w-full object-cover">
+  <img src="img4.jpg" class="rounded-2xl h-72 w-full object-cover">
+  <img src="img5.jpg" class="rounded-2xl h-72 w-full object-cover hidden md:block">
+  <img src="img6.jpg" class="rounded-2xl h-72 w-full object-cover hidden md:block">
+  <img src="img7.jpg" class="rounded-2xl h-72 w-full object-cover bg-white hidden md:block">
+</div>
+
+<!-- FOOTER CONTACT -->
+<footer class="bg-[#0a0a0a] text-white mt-12 p-8 rounded-t-[32px]">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-6">
+    <div>
+      <div class="bg-white text-black px-3 py-1.5 inline-flex items-center gap-2"><span class="nx text-2xl font-black">NX</span><div class="text-[8px] leading-[8px] font-bold"><p>Nexus</p><p>Logistics</p></div></div>
+      <p class="text-white/40 text-sm mt-3">Global Export & Import • USA to Nigeria</p>
+    </div>
+    <div class="text-sm">
+      <p class="text-white/40">Customer Care</p>
+      <a href="https://wa.me/2349167452777" class="text-xl font-bold text-[#ff4d12]">+2349167452777</a>
+      <p class="mt-4"><a href="admin.html" class="text-white/20 text-xs hover:text-white">Admin Login</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- PAY MODAL - Bank shows only after click -->
+<div id="payModal" class="fixed inset-0 bg-black/70 backdrop-blur hidden z-50 flex items-center justify-center p-6">
+  <div class="bg-white rounded-[32px] max-w-sm w-full p-8 relative">
+    <button onclick="closePay()" class="absolute right-6 top-6 bg-black/10 w-8 h-8 rounded-full">✕</button>
+    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-4">✓</div>
+    <h2 class="text-2xl font-black">Pay For Shipping</h2>
+    <p class="text-gray-400 text-sm mt-1">Transfer to our official account below</p>
+
+    <div class="mt-6 space-y-3">
+      <div class="bg-gray-100 p-4 rounded-2xl flex justify-between"><span class="text-xs text-gray-400">BANK</span><b>Sterling Bank</b></div>
+      <div class="bg-gray-100 p-4 rounded-2xl flex justify-between"><span class="text-xs text-gray-400">ACCOUNT NO</span><b class="text-lg">8387778364</b></div>
+      <div class="bg-gray-100 p-4 rounded-2xl"><p class="text-xs text-gray-400">ACCOUNT NAME</p><b class="text-sm">MFY/DATA 247 COMMUNICATION LTD</b></div>
+    </div>
+
+    <button onclick="copyAcc()" class="w-full mt-6 bg-black text-white py-4 rounded-full font-bold">Copy Account Number</button>
+    <a href="https://wa.me/2349167452777?text=Hi,%20I%20just%20paid%20for%20shipping,%20here%20is%20my%20proof" target="_blank" class="block text-center w-full mt-3 bg-[#25D366] text-white py-4 rounded-full font-bold">Send Proof on WhatsApp</a>
+    <p class="text-[11px] text-red-500 text-center mt-4">⚠️ Do NOT pay to any other account</p>
+  </div>
+</div>
+
+<script>
+// rotate your 7 images every 4 seconds - your logos back!
+let imgs=["img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg","img6.jpg","img7.jpg"];
+let i=0; setInterval(()=>{i=(i+1)%imgs.length; document.getElementById('heroImg').src=imgs[i]},4000);
+
+function openPay(){document.getElementById('payModal').classList.remove('hidden')}
+function closePay(){document.getElementById('payModal').classList.add('hidden')}
+function copyAcc(){navigator.clipboard.writeText('8387778364'); alert('Copied: 8387778364')}
+async function track(){
+  const id=document.getElementById('tid').value.trim(); if(!id) return alert('Enter ID');
+  const r=document.getElementById('result'); r.innerHTML='Searching...';
+  try{
+    const res=await fetch('/api/track/'+id); const d=await res.json();
+    r.innerHTML=`<div class="bg-white p-4 rounded-2xl text-black"><b>${d.trackingId}</b><br>Status: ${d.status}<br>📍 ${d.currentLocation}</div>`;
+  }catch{ r.innerHTML='<div class="bg-red-500 text-white p-3 rounded-xl">Try again in 10 sec</div>'; }
+}
+</script>
+</body>
+</html>
