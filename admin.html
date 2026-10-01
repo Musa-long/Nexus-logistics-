@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin - NEXUS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>body{background:#0a0a0a;color:white}</style>
+</head>
+<body class="p-4 md:p-8">
+<div class="max-w-3xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-black">NX Admin Panel</h1>
+    <a href="/" class="bg-white text-black px-4 py-1 rounded-full text-sm">View Site</a>
+  </div>
+
+  <div class="bg-[#1a1a1a] p-6 rounded-3xl border border-white/10">
+    <h2 class="font-bold text-xl mb-1">Create New Shipment</h2>
+    <p class="text-white/40 text-sm mb-6">Fill Sender & Receiver details correctly</p>
+    
+    <div class="grid gap-4">
+      <input id="tracking" placeholder="Tracking Code e.g NX10001" class="bg-black border border-white/10 p-3 rounded-xl w-full">
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs text-white/40">Sender Name</label><input id="senderName" placeholder="e.g John Doe" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"></div>
+        <div><label class="text-xs text-white/40">Sender Phone</label><input id="senderPhone" placeholder="e.g +1..." class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs text-white/40">Receiver Name</label><input id="receiverName" placeholder="e.g Musa" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"></div>
+        <div><label class="text-xs text-white/40">Receiver Phone *</label><input id="receiverPhone" placeholder="e.g 09167452777" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1 border-green-500/50"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs text-white/40">Status</label><select id="status" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"><option>In Transit</option><option>Shipped</option><option>Arrived Lagos</option><option>Out for Delivery</option><option>Delivered</option></select></div>
+        <div><label class="text-xs text-white/40">Current Location</label><input id="location" value="Lagos, Nigeria" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs text-white/40">Origin</label><input id="origin" value="USA" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"></div>
+        <div><label class="text-xs text-white/40">Destination</label><input id="destination" value="Nigeria" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs text-white/40">Estimated Delivery</label><input id="eta" placeholder="Nov 15, 2025" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"></div>
+        <div><label class="text-xs text-white/40">Fee</label><input id="fee" placeholder="#5000 or Paid" class="bg-black border border-white/10 p-3 rounded-xl w-full mt-1"></div>
+      </div>
+
+      <button onclick="createShipment()" id="btn" class="bg-[#ff4d12] text-white font-black py-4 rounded-full mt-4">Create Shipment</button>
+      <p id="msg" class="text-center text-sm"></p>
+    </div>
+  </div>
+
+  <div class="mt-8 bg-white text-black p-6 rounded-3xl">
+    <h3 class="font-black">All Shipments</h3>
+    <div id="list" class="mt-4 space-y-2 text-sm"></div>
+  </div>
+</div>
+
+<script>
+const API = window.location.origin;
+async function createShipment(){
+  const data = {
+    trackingId: document.getElementById('tracking').value.trim(),
+    senderName: document.getElementById('senderName').value,
+    senderPhone: document.getElementById('senderPhone').value,
+    receiverName: document.getElementById('receiverName').value,
+    receiverPhone: document.getElementById('receiverPhone').value,
+    status: document.getElementById('status').value,
+    currentLocation: document.getElementById('location').value,
+    origin: document.getElementById('origin').value,
+    destination: document.getElementById('destination').value,
+    eta: document.getElementById('eta').value,
+    fee: document.getElementById('fee').value,
+    timeline: [{date: new Date().toLocaleString(), status: document.getElementById('status').value, location: document.getElementById('location').value, active:true}]
+  };
+  if(!data.trackingId || !data.receiverPhone){ alert('Tracking Code and Receiver Phone required'); return; }
+  document.getElementById('btn').innerText='Creating...';
+  const res = await fetch(`${API}/api/shipments`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+  const result = await res.json();
+  document.getElementById('msg').innerText = result.message || 'Created!';
+  document.getElementById('btn').innerText='Create Shipment';
+  loadList();
+}
+async function loadList(){
+  const res = await fetch(`${API}/api/shipments`); const shipments = await res.json();
+  document.getElementById('list').innerHTML = shipments.map(s=>`<div class="border p-3 rounded-xl flex justify-between"><div><b>${s.trackingId}</b> - ${s.receiverName} (${s.receiverPhone})<br><span class="text-xs text-gray-500">${s.senderName} → ${s.destination} | ${s.status}</span></div><a href="https://wa.me/${s.receiverPhone}?text=Your shipment ${s.trackingId} is ${s.status}" class="bg-green-500 text-white px-3 py-1 rounded-full text-xs h-fit">WhatsApp</a></div>`).join('');
+}
+loadList();
+</script>
+</body>
+                                                                            </html>
