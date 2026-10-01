@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS Logistics - Track Your Shipment</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
+  body{background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column}
+  header{background:#020617;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e293b;position:sticky;top:0;z-index:10}
+  .logo{font-weight:800;font-size:22px;letter-spacing:1px;color:#fff}
+  .logo span{color:#38bdf8}
+  .container{max-width:800px;width:95%;margin:40px auto;flex:1}
+  .hero{text-align:center;margin-bottom:30px}
+  .hero h1{font-size:32px;font-weight:700;margin-bottom:10px}
+  .hero p{color:#94a3b8}
+  .card{background:#1e293b;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.3);border:1px solid #334155}
+  .input-group{display:flex;gap:10px;margin-bottom:20px}
+  input{flex:1;padding:14px 16px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff;font-size:16px;outline:none;text-transform:uppercase}
+  input:focus{border-color:#38bdf8}
+  button{padding:14px 22px;border-radius:10px;border:none;background:#38bdf8;color:#020617;font-weight:700;cursor:pointer;font-size:16px}
+  button:hover{background:#0ea5e9}
+  #result{display:none;margin-top:20px}
+  .status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}
+  .status-item{background:#0f172a;padding:12px;border-radius:10px;border:1px solid #334155}
+  .status-item small{color:#94a3b8;display:block;font-size:11px;letter-spacing:1px}
+  .status-item b{font-size:14px}
+  .timeline{margin-top:20px;border-left:2px solid #334155;padding-left:20px}
+  .t-item{position:relative;margin-bottom:20px}
+  .t-item::before{content:'';position:absolute;left:-27px;top:4px;width:12px;height:12px;border-radius:50%;background:#334155}
+  .t-item.active::before{background:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,0.2)}
+  .t-date{font-size:12px;color:#94a3b8}
+  .t-status{font-weight:600;margin:2px 0}
+  .t-loc{font-size:13px;color:#cbd5e1}
+  .error{background:#450a0a;border:1px solid #7f1d1d;color:#fecaca;padding:12px;border-radius:10px;text-align:center}
+  footer{margin-top:50px;padding:30px 20px;background:#020617;border-top:1px solid #1e293b;text-align:center}
+  #bankInfo{max-width:600px;margin:0 auto 25px;background:#1e293b;border:1px solid #334155;padding:16px;border-radius:12px;font-size:14px;line-height:1.6}
+  .care-btn{display:inline-block;background:#25D366;color:#fff;padding:16px 36px;border-radius:50px;text-decoration:none;font-weight:700;font-size:17px;box-shadow:0 6px 20px rgba(37,211,102,0.4);transition:0.2s}
+  .care-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,211,102,0.6)}
+  .footer-note{margin-top:20px;color:#475569;font-size:12px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NEXUS <span>LOGISTICS</span></div>
+  <div style="font-size:12px;color:#94a3b8">FAST • SAFE • RELIABLE</div>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <h1>Track Your Shipment</h1>
+    <p>Enter your tracking code to see real-time updates</p>
+  </div>
+
+  <div class="card">
+    <div class="input-group">
+      <input id="codeInput" placeholder="e.g. NX-123456" />
+      <button onclick="track()">Track</button>
+    </div>
+    <div id="result"></div>
+  </div>
+</div>
+
+<!-- FOOTER WITH BANK + HIDDEN WHATSAPP -->
+<footer>
+  <div id="bankInfo">Loading payment details...</div>
+  
+  <a href="/customer-care" target="_blank" class="care-btn">
+    💬 Chat with Customer Care
+  </a>
+  
+  <div class="footer-note">
+    © 2025 NEXUS Logistics. All rights reserved.<br>
+    Your trusted partner for USA to Nigeria shipping.
+  </div>
+</footer>
+
+<script>
+const resultDiv = document.getElementById('result');
+const input = document.getElementById('codeInput');
+
+input.addEventListener('keypress', e=>{ if(e.key==='Enter') track(); });
+
+async function track(){
+  const code = input.value.trim().toUpperCase();
+  if(!code){ alert('Enter tracking code'); return; }
+  resultDiv.style.display='block';
+  resultDiv.innerHTML = '<p style="text-align:center;color:#94a3b8">Searching...</p>';
+  
+  try{
+    const res = await fetch(`/api/track/${code}`);
+    if(!res.ok) throw new Error('Not found');
+    const data = await res.json();
+    showData(data);
+  }catch(err){
+    resultDiv.innerHTML = `<div class="error">❌ Tracking code <b>${code}</b> not found. Please check and try again or contact Customer Care.</div>`;
+  }
+}
+
+function showData(d){
+  let timelineHtml = '';
+  if(d.timeline && d.timeline.length){
+    d.timeline.slice().reverse().forEach(t=>{
+      timelineHtml += `
+        <div class="t-item ${t.active?'active':''}">
+          <div class="t-date">${t.date||''}</div>
+          <div class="t-status">${t.status||''}</div>
+          <div class="t-loc">📍 ${t.location||''}</div>
+        </div>`;
+    });
+  }
+
+  resultDiv.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <h3 style="font-size:18px">📦 ${d.trackingCode}</h3>
+      <span style="background:${d.status==='Delivered'?'#16a34a':'#38bdf8'};color:#000;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700">${d.status}</span>
+    </div>
+    <div class="status-grid">
+      <div class="status-item"><small>ORIGIN</small><b>${d.origin||'USA'}</b></div>
+      <div class="status-item"><small>DESTINATION</small><b>${d.destination||'Nigeria'}</b></div>
+      <div class="status-item"><small>CURRENT LOCATION</small><b>${d.location||'In Transit'}</b></div>
+      <div class="status-item"><small>EST. DELIVERY</small><b>${d.eta||'3-5 days'}</b></div>
+      <div class="status-item" style="grid-column:span 2"><small>PAYMENT / FEE</small><b>${d.fee||'Pending'}</b></div>
+    </div>
+    <h4 style="margin-top:20px;font-size:14px;color:#94a3b8;letter-spacing:1px">SHIPMENT HISTORY</h4>
+    <div class="timeline">${timelineHtml || '<p style="color:#94a3b8;font-size:13px">No history yet</p>'}</div>
+  `;
+}
+
+// Load bank from server variable - WhatsApp stays hidden
+fetch('/api/config').then(r=>r.json()).then(c=>{
+  document.getElementById('bankInfo').innerHTML = `<b>💳 Payment Details:</b><br>${c.bank.replace(/\n/g,'<br>')}`;
+}).catch(()=>{
+  document.getElementById('bankInfo').innerHTML = 'Payment details available after confirmation. Please chat with Customer Care.';
+});
+</script>
+
+</body>
+  </html>
