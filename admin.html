@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>NEXUS Admin - PostgreSQL</title>
+<style>body{font-family:Arial;padding:15px;background:#f5f5f5} input,select{width:100%;padding:12px;margin:5px 0;border:1px solid #ccc;border-radius:6px;box-sizing:border-box} label{font-weight:800;font-size:12px;margin-top:8px;display:block}.card{background:#fff;padding:20px;border-radius:12px;max-width:600px;margin:auto;box-shadow:0 4px 20px rgba(0,0,0,.08)}.btn{background:#FF4D00;color:#fff;padding:14px;border:none;width:100%;font-weight:800;border-radius:8px;cursor:pointer;margin-top:8px}#msg{padding:12px;margin-top:12px;border-radius:8px;display:none}</style>
+</head><body>
+<div class="card">
+<h2>NEXUS Admin - LIVE DB</h2>
+<p style="font-size:12px;color:#666">Saves directly to Render PostgreSQL - No more JSON editing</p>
+
+<label>YOUR RENDER API URL (paste once)</label>
+<input id="apiUrl" placeholder="https://nexus-api-xxxx.onrender.com" value="https://YOUR_RENDER_URL.onrender.com">
+
+<input id="code" placeholder="Tracking No e.g. NX150021">
+<input id="weight" placeholder="Weight e.g. 4kg">
+<input id="location" placeholder="Current Location e.g. Abuja">
+<select id="status"><option>In Transit</option><option>At Warehouse</option><option>On Hold - Payment Required</option><option>Delivered</option><option>Out for Delivery</option></select>
+<input id="origin" placeholder="Origin e.g. Lagos">
+<input id="destination" placeholder="Destination e.g. Kano">
+<input id="sender" placeholder="Name of Sender">
+<input id="receiver" placeholder="Receiver Name">
+<input id="phone" placeholder="Receiver Phone Number">
+<input id="fee" placeholder="Shipping Fee Amount e.g. ₦15,000">
+<label>Shipping Date</label><input id="shipDate" type="date" value="2026-10-01">
+<label>Estimated Delivery Date</label><input id="estDate" type="date">
+
+<button class="btn" onclick="saveToDB()">💾 SAVE TO POSTGRESQL</button>
+<div id="msg"></div>
+
+<button class="btn" style="background:#111;margin-top:20px" onclick="testTrack()">🔍 TEST TRACKING ON DB</button>
+</div>
+
+<script>
+const savedUrl = localStorage.getItem("nexus_api");
+if(savedUrl) document.getElementById("apiUrl").value = savedUrl;
+
+async function saveToDB(){
+ let api = document.getElementById("apiUrl").value.trim().replace(/\/$/, "");
+ if(!api || api.includes("YOUR_RENDER_URL")){ alert("Put your real Render URL first! e.g. https://nexus-api-xxxx.onrender.com"); return; }
+ localStorage.setItem("nexus_api", api);
+ let c=document.getElementById("code").value.trim().toUpperCase();
+ if(!c){alert('Enter Tracking No');return}
+ let data={
+  trackingCode: c,
+  weight: document.getElementById('weight').value || 'N/A',
+  location: document.getElementById('location').value || 'N/A',
+  status: document.getElementById('status').value || 'In Transit',
+  origin: document.getElementById('origin').value || 'N/A',
+  destination: document.getElementById('destination').value || 'N/A',
+  sender: document.getElementById('sender').value || 'N/A',
+  receiver: document.getElementById('receiver').value || 'N/A',
+  phone: document.getElementById('phone').value || 'N/A',
+  fee: document.getElementById('fee').value || 'N/A',
+  shipDate: document.getElementById('shipDate').value || new Date().toISOString().split('T')[0],
+  estDate: document.getElementById('estDate').value || 'N/A',
+  date: new Date().toISOString().split('T')[0]
+ };
+ let msg=document.getElementById("msg");
+ msg.style.display="block"; msg.style.background="#fff3cd"; msg.style.color="#000"; msg.innerText="⏳ Saving "+c+" to PostgreSQL...";
+ try{
+  let res = await fetch(`${api}/api/tracking`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(data)
+  });
+  let j = await res.json();
+  if(j.success){
+    msg.style.background="#d4edda"; msg.style.color="#155724";
+    msg.innerText=`✅ SUCCESS! ${c} SAVED!\nNow go to your main site and track ${c} - it will appear instantly.`;
+  }else{
+    msg.style.background="#f8d7da"; msg.style.color="#721c24"; msg.innerText="❌ Error: "+JSON.stringify(j);
+  }
+ }catch(e){
+  msg.style.background="#f8d7da"; msg.style.color="#721c24"; msg.innerText="❌ Network error: "+e.message+"\nCheck your API URL is correct and Render is live.";
+ }
+}
+
+async function testTrack(){
+ let api = document.getElementById("apiUrl").value.trim().replace(/\/$/, "");
+ let c=document.getElementById("code").value.trim().toUpperCase();
+ if(!c) c="NX253025";
+ let msg=document.getElementById("msg");
+ msg.style.display="block"; msg.style.background="#cce5ff"; msg.innerText="🔍 Testing "+c+"...";
+ let res = await fetch(`${api}/api/track/${c}`);
+ let d = await res.json();
+ msg.innerText = d.found ? `✅ FOUND: ${c} = ${JSON.stringify(d,null,2)}` : `❌ ${c} NOT FOUND in DB yet. Import it.`;
+}
+</script>
+</body></html>
